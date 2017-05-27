@@ -1,0 +1,4 @@
+{
+    "sasslintConfig": "./.sass-lint.yml",
+    "eslintConfig": "./.eslintrc.yml",
+}
