@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# SCSS Code Style Checking
+if [[ $(sass-lint -c ./.sass-lint.yml './resources/assets/sass/**/*.scss' -v) ]]; then
+    echo "\033[0;31m";
+    echo "###########################################################################";
+    echo "########## SCSS VIOLATION DETECTED :: SCSS VIOLATION DETECTED #############";
+    echo "###########################################################################";
+    echo "\033[0m";
+    echo "run the below command to see the output";
+    echo "\033[1;36m";
+    echo "sass-lint -c ./.sass-lint.yml './resources/assets/sass/**/*.scss' -v -q";
+    echo "";
+    exit 1;
+fi
+
+# Javascript Code Style Checking
+eslint "./resources/assets/js/**/*.js" &> /dev/null
+
+if [ $? -ne 0 ]; then
+    echo "\033[0;31m";
+    echo "###########################################################################";
+    echo "######### ESLINT VIOLATION DETECTED :: ESLINT VIOLATION DETECTED ##########";
+    echo "###########################################################################";
+    echo "\033[0m";
+    echo "run the below command to see the output";
+    echo "\033[1;36m";
+    echo "eslint './resources/assets/js/**/*.js'";
+    echo "";
+    exit 1;
+fi
+
+# PHP Code Style Checking
+./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./app &> /dev/null
+
+if [ $? -ne 0 ]; then
+    echo "\033[0;31m";
+    echo "###########################################################################";
+    echo "########## PHPCS VIOLATION DETECTED :: PHPCS VIOLATION DETECTED ###########";
+    echo "###########################################################################";
+    echo "\033[0m";
+    echo "run the below command to see the output";
+    echo "\033[1;36m";
+    echo "./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./app";
+    echo "";
+    exit 1;
+fi
+
+./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./routes &> /dev/null
+
+if [ $? -ne 0 ]; then
+    echo "\033[0;31m";
+    echo "###########################################################################";
+    echo "########## PHPCS VIOLATION DETECTED :: PHPCS VIOLATION DETECTED ###########";
+    echo "###########################################################################";
+    echo "\033[0m";
+    echo "run the below command to see the output";
+    echo "\033[1;36m";
+    echo "./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./routes";
+    echo "";
+    exit 1;
+fi
+
+# PHP Linting
+PHPAppPath=./app
+
+for file in `find $PHPAppPath -type f -name "*.php"` ; do
+    RESULTS=`php -l $file`
+
+    if [ "$RESULTS" != "No syntax errors detected in $file" ] ; then
+        echo "\033[0;31m";
+        echo "###########################################################################";
+        echo "######### PHP SYNTAX ERROR DETECTED :: PHP SYNTAX ERROR DETECTED ##########";
+        echo "###########################################################################";
+        echo "\033[0m";
+        echo "run the below command to see the output";
+        echo "\033[1;36m";
+        echo "php -l $file";
+        echo "";
+        exit 1;
+    fi
+done
+
+# Success Message
+echo "\033[0;32m";
+echo "###########################################################################";
+echo "############# PRE-POST TESTS ALL PASSED, TODAY IS A GOOD DAY. #############";
+echo "###########################################################################";
+echo "\033[0m";

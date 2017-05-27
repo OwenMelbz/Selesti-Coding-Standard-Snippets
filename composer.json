@@ -1,0 +1,23 @@
+{
+    "scripts": {
+        "psrcheck": [
+            "./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./app",
+            "./vendor/bin/phpcs --standard=ruleset.xml --warning-severity=8 ./routes"
+        ],
+        "psrfix": [
+            "./vendor/bin/phpcbf --standard=ruleset.xml --warning-severity=8 ./app",
+            "./vendor/bin/phpcbf --standard=ruleset.xml --warning-severity=8 ./routes"
+        ],
+        "phplint": [
+            "find -L ./app -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
+            "find -L ./routes -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l"
+        ],
+        "clean": [
+            "find . -name '.DS_Store' -type f -delete",
+            "find . -name '*.orig' -type f -delete"
+        ],
+        "githooks": [
+            "rm -rf $(pwd)/.git/hooks",
+            "ln -s $(pwd)/git-hooks/ $(pwd)/.git/hooks"
+        ]
+}
